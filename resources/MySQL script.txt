@@ -1,0 +1,48 @@
+create table User (
+	userID int not null auto_increment,
+    email varchar(255) not null,
+    password varchar(255) not null,
+    firstName varchar(255),
+    surname varchar(255),
+    orgNum bigint,
+    establishedDate datetime,
+    primary key (userID)
+);
+
+create table Chat (
+	chatID int not null auto_increment,
+    createdDate datetime not null,
+    lastActive datetime not null,
+    userID int not null,
+    primary key (chatID),
+    foreign key (userID) references User (userID)
+);
+
+create table Admins (
+	userID int not null,
+    chatID int not null,
+    primary key (userID, chatID),
+    foreign key (userID) references User (userID),
+    foreign key (chatID) references Chat (ChatID)
+);
+
+create table Members (
+	userID int not null,
+    chatID int not null,
+    primary key (userID, chatID),
+    foreign key (userID) references User (userID),
+    foreign key (chatID) references Chat (ChatID)
+);
+
+create table ChatElement (
+	chatElementID int not null auto_increment,
+    sent datetime not null,
+    opened datetime, 
+    message longtext,
+    media blob,
+    userID int not null,
+    chatID int not null,
+    primary key (chatElementID),
+    foreign key (userID) references User (userID),
+    foreign key (chatID) references Chat (chatID)
+);
