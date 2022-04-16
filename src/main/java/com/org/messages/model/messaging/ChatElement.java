@@ -16,6 +16,13 @@ public abstract class ChatElement {
         this.sent = LocalDateTime.now();
     }
 
+    public ChatElement(int chatElementID, LocalDateTime sent, LocalDateTime opened, User sender) {
+        this.chatElementID = chatElementID;
+        this.sent = sent;
+        setOpened(opened);
+        this.sender = sender;
+    }
+
     public int getChatElementID() {
         return chatElementID;
     }
