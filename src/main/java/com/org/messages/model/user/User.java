@@ -39,6 +39,6 @@ public class User extends AbstractUser {
 
     @Override
     public String toString() {
-        return "{" + getUserID() + " | " + getFirstName() + " " + getSurname() + "}";
+        return "{" + getEmail() + " | " + getFirstName() + " " + getSurname() + "}";
     }
 }

@@ -12,6 +12,7 @@ import java.util.Comparator;
 
 public class Chat {
     private final int chatID;
+    private String chatName;
     private final LocalDateTime createdDate = LocalDateTime.now();
     private User creator;
     private Collection<User> admins = new ArrayList<User>();
@@ -19,11 +20,24 @@ public class Chat {
     private ArrayList<ChatElement> messages = new ArrayList<ChatElement>();
     private LocalDateTime lastActive;
 
-    public Chat(int chatID, User creator, Collection<User> chatMembers) {
+    public Chat(int chatID, String chatName, User creator, Collection<User> chatMembers) {
         this.chatID = chatID;
+        setChatName(chatName);
         setCreator(creator);
-        chatMembers.stream().forEach(chatMember -> this.addChatListener(chatMember));
+        chatMembers.stream().forEach(chatMember -> addChatListener(chatMember));
         setLastActive();
+    }
+
+    public int getChatID() {
+        return chatID;
+    }
+
+    public String getChatName() {
+        return chatName;
+    }
+
+    public void setChatName(String chatName) {
+        this.chatName = chatName;
     }
 
     public User getCreator() {
@@ -108,7 +122,7 @@ public class Chat {
         User jatha = new User(1, "jathavaan12@gmail.com", "jathavaan12", "Jathavaan", "Shankarr", null);
         Collection<User> members = new ArrayList(Arrays.asList(jatha));
 
-        Chat chat = new Chat(1, jatha, members);
+        Chat chat = new Chat(1, "Chatname", jatha, members);
         System.out.println(chat);
     }
 }
