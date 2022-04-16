@@ -3,11 +3,7 @@ package com.org.messages.DB;
 import com.org.messages.model.messaging.*;
 import com.org.messages.model.user.User;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -113,6 +109,74 @@ public class Driver {
         System.out.println("Chat added to database: " + chat);
     }
 
+    public Chat retrieveChat(Chat chat) throws SQLException {
+        String sql = "select * from chat inner join user on chat.useID = user.userID where chatID = '" + chat.getChatID() + "' limit 1";
+        ResultSet rs = getStm().executeQuery(sql);
+
+        Chat finalChat = null;
+
+        while (rs.next()) {
+            int dbChatID = rs.getInt("chatID");
+            String dbChatName = rs.getString("chatName");
+            String dbCreatedDateString = rs.getString("createdDate");
+            String dbLastActiveString = rs.getString("lastActive");
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dbCreatedDate = LocalDateTime.parse(dbCreatedDateString, formatter);
+            LocalDateTime dbLastActive = LocalDateTime.parse(dbLastActiveString, formatter);
+
+            int dbUserID = rs.getInt("userID");
+            String dbEmail = rs.getString("email");
+            String dbPassword = rs.getString("password");
+            String dbFirstName = rs.getString("firstName");
+            String dbSurname = rs.getString("surname");
+            LocalDateTime dbDateOfBirth = LocalDateTime.parse(rs.getString("dateOfBirth"), formatter);
+
+            User creator = new User(dbUserID, dbEmail, dbPassword, dbFirstName, dbSurname, dbDateOfBirth);
+
+            finalChat = new Chat(dbChatID, dbChatName, dbCreatedDate, dbLastActive, creator);
+        }
+
+        return finalChat;
+    }
+    
+    public ArrayList<Chat> retrieveChatByUserID(User user) throws SQLException {
+        if (user == null)
+            throw new IllegalArgumentException("User cannot be null");
+
+        String sql = "select chat.chatID, chat.chatName, chat.createdDate, chat.lastActive, chat.userID, user.email, user.password, user.firstName, user.surname, user.dateOfBirth from members " +
+                "inner join chat on members.chatID = chat.chatID " +
+                "inner join user on members.userID = user.userID " +
+                "where user.userID = '" + user.getUserID() + "'";
+        ResultSet rs = getStm().executeQuery(sql);
+
+        ArrayList<Chat> chats = new ArrayList<Chat>();
+
+        while (rs.next()) {
+            int dbChatID = rs.getInt("chatID");
+            String dbChatName = rs.getString("chatName");
+            String dbCreatedDateString = rs.getString("createdDate");
+            String dbLastActiveString = rs.getString("lastActive");
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dbCreatedDate = LocalDateTime.parse(dbCreatedDateString, formatter);
+            LocalDateTime dbLastActive = LocalDateTime.parse(dbLastActiveString, formatter);
+
+            int dbUserID = rs.getInt("userID");
+            String dbEmail = rs.getString("email");
+            String dbPassword = rs.getString("password");
+            String dbFirstName = rs.getString("firstName");
+            String dbSurname = rs.getString("surname");
+            LocalDateTime dbDateOfBirth = LocalDateTime.parse(rs.getString("dateOfBirth"), formatter);
+
+            User creator = new User(dbUserID, dbEmail, dbPassword, dbFirstName, dbSurname, dbDateOfBirth);
+
+            chats.add(new Chat(dbChatID, dbChatName, dbCreatedDate, dbLastActive, creator));
+        }
+
+        return chats;
+    }
+
     private void addChatMember(Chat chat, User chatMember) throws SQLException {
         String sql = "insert into members (chatID, userID) values ('" + chat.getChatID() + "', '" + chatMember.getUserID() + "')";
         getStm().executeUpdate(sql);
@@ -129,7 +193,7 @@ public class Driver {
 
     public void sendMessage(Chat chat, ChatElement message) throws SQLException {
         if (chat == null)
-            throw new  IllegalArgumentException("Chat cannot be null");
+            throw new IllegalArgumentException("Chat cannot be null");
 
         if (message == null)
             throw new IllegalArgumentException("Chat element cannot be null");

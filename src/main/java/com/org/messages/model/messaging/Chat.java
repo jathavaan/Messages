@@ -13,7 +13,7 @@ import java.util.Comparator;
 public class Chat {
     private final int chatID;
     private String chatName;
-    private final LocalDateTime createdDate = LocalDateTime.now();
+    private final LocalDateTime createdDate;
     private User creator;
     private Collection<User> admins = new ArrayList<User>();
     private Collection<User> chatListeners;
@@ -25,8 +25,18 @@ public class Chat {
         setChatName(chatName);
         setCreator(creator);
         chatMembers.stream().forEach(chatMember -> addChatListener(chatMember));
-        setLastActive();
+        this.createdDate = LocalDateTime.now();
+        updateLastActive();
     }
+
+    public Chat(int chatID, String chatName, LocalDateTime createdDate, LocalDateTime lastActive, User creator) {
+        this.chatID = chatID;
+        setChatName(chatName);
+        this.createdDate = createdDate;
+        setLastActive(lastActive);
+        this.creator = creator;
+    }
+
 
     public int getChatID() {
         return chatID;
@@ -93,7 +103,7 @@ public class Chat {
     public void sendMessage(ChatElement message) {
         ArrayList<ChatElement> messages = getMessages();
         messages.add(message);
-        setLastActive();
+        updateLastActive();
         this.messages = messages;
     }
 
@@ -101,7 +111,11 @@ public class Chat {
         return lastActive;
     }
 
-    public void setLastActive() {
+    public void setLastActive(LocalDateTime lastActive) {
+        this.lastActive = lastActive;
+    }
+
+    public void updateLastActive() {
         this.lastActive = LocalDateTime.now();
     }
 
