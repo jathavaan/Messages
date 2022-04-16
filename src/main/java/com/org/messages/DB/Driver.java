@@ -1,9 +1,13 @@
 package com.org.messages.DB;
 
-import com.org.messages.model.messaging.Chat;
+import com.org.messages.model.messaging.*;
 import com.org.messages.model.user.User;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ public class Driver {
 
     public Driver() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        this.con = DriverManager.getConnection("jdbc:mysql://:3306/messagedb", "root", "jathavaan12");
+        this.con = DriverManager.getConnection("jdbc:mysql://:3306/messagedb", "root", "jathavaan12"); // Connects to DB
         this.stm = con.createStatement();
     }
 
@@ -117,14 +121,35 @@ public class Driver {
     }
 
     private void addAdmin(Chat chat, User user) throws SQLException {
-        String sql = "insert into admins (userID, chatID) values ('"+ user.getUserID() +"', '"+ chat.getChatID() +"')";
+        String sql = "insert into admins (userID, chatID) values ('" + user.getUserID() + "', '" + chat.getChatID() + "')";
         getStm().executeUpdate(sql);
     }
 
-
-
-
     // HANDLE MESSAGE
+
+    public void sendMessage(Chat chat, ChatElement message) throws SQLException {
+        if (chat == null)
+            throw new  IllegalArgumentException("Chat cannot be null");
+
+        if (message == null)
+            throw new IllegalArgumentException("Chat element cannot be null");
+
+        int chatID = chat.getChatID();
+
+        if (message instanceof Message) {
+            LocalDateTime sent = message.getSent();
+            LocalDateTime opened = message.getOpened();
+            int userID = message.getSender().getUserID();
+            String text = ((Message) message).getMessage();
+
+            String sql = "insert into chatelement (sent, opened, message, chatID, userID) values ('" + sent + "', '" + opened + "', '" + message + "', '" + chat.getChatID() + "', '" + userID + "')";
+            getStm().executeUpdate(sql);
+
+            System.out.println("Message sent: " + message);
+        } else if (message instanceof Media || message instanceof VoiceNote) {
+            // Add functionality for media files and voicenotes
+        }
+    }
 
     public static void main(String[] args) {
         Driver d = null;
@@ -133,7 +158,7 @@ public class Driver {
         try {
             d = new Driver();
             d.createUser("jathavaan12@gmail.com", "Jathavaan12", "Jathavaan", "Shankarr", LocalDateTime.parse("2001-07-12 00:00:00", formatter));
-            d.createUser("shankarrv@gmail.com", "Ramanir16", "Shankarr",  "Vinajagam", LocalDateTime.parse("1969-04-16 00:00:00", formatter));
+            d.createUser("shankarrv@gmail.com", "Ramanir16", "Shankarr", "Vinajagam", LocalDateTime.parse("1969-04-16 00:00:00", formatter));
             d.createUser("ramanir16@gmail.com", "Shankarrv09", "Ramani", "Ramanathan", LocalDateTime.parse("1969-11-09 00:00:00", formatter));
 
             User jatha = d.retrieveUser("jathavaan12@gmail.com");

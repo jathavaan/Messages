@@ -31,4 +31,8 @@ public abstract class ChatElement {
     public void setOpened(LocalDateTime opened) {
         this.opened = opened;
     }
+
+    public User getSender() {
+        return sender;
+    }
 }
