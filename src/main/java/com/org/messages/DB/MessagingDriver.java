@@ -89,12 +89,17 @@ public class MessagingDriver extends Driver {
 
         User jatha = ud.retrieveUser("jathavaan12@gmail.com");
         User ramani = ud.retrieveUser("ramanir16@gmail.com");
-        ArrayList<Chat> chats = cd.retrieveChatByUser(jatha);
+        User shankarr = ud.retrieveUser("shankarrv@gmail.com");
+        ArrayList<Chat> chats = cd.retrieveChatByUser(shankarr);
 
         if (chats.size() > 0) {
             Chat chat = chats.get(0);
-            Message msg = new Message(0, "Tusen takk!", ramani);
-            // md.sendMessage(chat, msg);
+            Message msg1 = new Message(0, "Dette er en familie chat", jatha);
+            Message msg2 = new Message(0, "Å kult", ramani);
+            Message msg3 = new Message(0, "Hyggelig", shankarr);
+            md.sendMessage(chat, msg1);
+            md.sendMessage(chat, msg2);
+            md.sendMessage(chat, msg3);
             System.out.println(md.getMessagesInChat(chat));
         }
 
