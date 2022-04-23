@@ -4,6 +4,6 @@ module com.org.messages {
     requires java.sql;
 
 
-    opens com.org.messages to javafx.fxml;
+    opens com.org.messages.view to javafx.fxml;
     exports com.org.messages;
 }

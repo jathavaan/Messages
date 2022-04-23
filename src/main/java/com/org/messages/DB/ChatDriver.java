@@ -96,15 +96,7 @@ public class ChatDriver extends Driver {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dbCreatedDate = LocalDateTime.parse(dbCreatedDateString, formatter);
             LocalDateTime dbLastActive = LocalDateTime.parse(dbLastActiveString, formatter);
-
-            int dbUserID = rs.getInt("userID");
-            String dbEmail = rs.getString("email");
-            String dbPassword = rs.getString("password");
-            String dbFirstName = rs.getString("firstName");
-            String dbSurname = rs.getString("surname");
-            LocalDateTime dbDateOfBirth = LocalDateTime.parse(rs.getString("dateOfBirth"), formatter);
-
-            User creator = new User(dbUserID, dbEmail, dbPassword, dbFirstName, dbSurname, dbDateOfBirth);
+            User creator = generateUserFromResultSet(rs);
 
             chats.add(new Chat(dbChatID, dbChatName, dbCreatedDate, dbLastActive, creator));
         }

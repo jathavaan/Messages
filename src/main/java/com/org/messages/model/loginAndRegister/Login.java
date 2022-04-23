@@ -13,8 +13,10 @@ public class Login {
         User user = ud.retrieveUser(email);
 
         if (user == null) return false; // Checks if a user with the provied email exists
-        if (user.getEmail() == email && user.getPassword() == password) return true; // Valid email and password
-
-        return false;
+        if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+            return true; // Valid email and password
+        } else {
+            return false;
+        }
     }
 }
