@@ -29,8 +29,8 @@
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints maxHeight="156.0" minHeight="10.0" prefHeight="124.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="128.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="323.0" minHeight="10.0" prefHeight="234.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="323.0" minHeight="10.0" prefHeight="97.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <TextField id="email" fx:id="emailField" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" promptText="E-mail">
@@ -89,4 +89,16 @@
          </children>
       </GridPane>
    </center>
+   <bottom>
+      <Pane prefHeight="171.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+   </bottom>
+   <left>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </right>
+   <top>
+      <Pane prefHeight="67.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+   </top>
 </BorderPane>
