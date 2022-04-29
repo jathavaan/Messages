@@ -121,15 +121,7 @@ public class Chat {
 
     @Override
     public String toString() {
-        return "Chat{" +
-                "chatID=" + chatID +
-                ", createdDate=" + createdDate +
-                ", creator=" + creator +
-                ", admins=" + admins +
-                ", chatListeners=" + chatListeners +
-                ", messages=" + messages +
-                ", lastActive=" + lastActive +
-                '}';
+        return getChatName();
     }
 
     public static void main(String[] args) {

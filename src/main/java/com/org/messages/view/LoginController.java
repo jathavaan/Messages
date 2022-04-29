@@ -50,7 +50,7 @@ public class LoginController {
 
                 URL url = new File("src/main/resources/com/org/messages/app.fxml").toURI().toURL();
                 FXMLLoader loader = new FXMLLoader(url);
-                root = loader.load();
+                root = (Parent) loader.load();
 
                 AppController appController = loader.getController();
                 appController.setLoggedInUser(loggedInUser);
