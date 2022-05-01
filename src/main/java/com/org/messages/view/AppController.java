@@ -8,18 +8,23 @@ import com.org.messages.model.user.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
-public class AppController extends AbstractController {
+public class AppController extends AbstractController implements Initializable {
     private User loggedInUser;
     private ArrayList<Chat> chats = new ArrayList<Chat>();
     private Chat activeChat;
@@ -29,6 +34,8 @@ public class AppController extends AbstractController {
     GridPane chatGrid;
     @FXML
     VBox vBox;
+    @FXML
+    ScrollPane messageScrollPane;
 
     public void setLoggedInUser(User loggedInUser) {
         this.loggedInUser = loggedInUser;
@@ -37,6 +44,16 @@ public class AppController extends AbstractController {
 
     public User getLoggedInUser() {
         return loggedInUser;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        vBox.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                messageScrollPane.setVvalue((Double) t1);
+            }
+        });
     }
 
     @FXML
@@ -48,14 +65,14 @@ public class AppController extends AbstractController {
 
             // Iterates through all the sent messages in the active chat and prints them out
             messages.forEach(message -> {
-                if (message.getSender().equals(getLoggedInUser())) {
+                if (message.getSender().getUserID() == loggedInUser.getUserID()) {
                     // Creates the messages the logged in user has sent
-                    HBox userMessage = createChatElement(message, Pos.CENTER_RIGHT);
+                    HBox userMessage = createChatElement(message, true);
                     userMessage.autosize();
                     vBox.getChildren().add(userMessage);
                 } else {
                     // Creates the messages anyone but the logged in user has sent
-                    HBox otherMessage = createChatElement(message, Pos.CENTER_LEFT);
+                    HBox otherMessage = createChatElement(message, false);
                     otherMessage.autosize();
                     vBox.getChildren().add(otherMessage);
                 }
@@ -93,27 +110,43 @@ public class AppController extends AbstractController {
         }
     }
 
-    private HBox createChatElement(ChatElement message, Pos pos) {
+    private HBox createChatElement(ChatElement message, boolean isSender) {
         if (message instanceof Message) {
-            String textString = ((Message) message).getMessage();
-            String msg = message.getSender().getFirstName() + " " + message.getSender().getSurname() + "\n" +
-                    textString + "\n" + Conversion.dateToString(message.getSent());
-
             HBox hBox = new HBox();
-            hBox.setAlignment(pos);
-            hBox.setPadding(new Insets(5, 5, 5, 10));
 
-            Text text = new Text(msg);
-            TextFlow textFlow = new TextFlow(text);
+            String senderString = message.getSender().getFirstName() + "\n";
+            String messageString = ((Message) message).getMessage() + "\n";
+            String timeString = Conversion.dateToString(message.getSent());
 
+            Text senderText = new Text(senderString);
+            Text messageText = new Text(messageString);
+            Text timeText = new Text(timeString);
 
-            textFlow.setStyle(
-                 "-fx-color: rgb(239, 242, 255) " +
-                 "-fx-background-color: rgb(15, 125, 242) "
-            );
+            senderText.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+            messageText.setStyle("-fx-font-size: 14px;");
+            timeText.setStyle("-fx-font-size: 14px; -fx-font-style: italic;");
+
+            TextFlow textFlow = new TextFlow();
+
+            if (isSender) {
+                hBox.setAlignment(Pos.CENTER_RIGHT);
+                hBox.setPadding(new Insets(5, 10, 5, 5));
+                textFlow.setStyle("-fx-color: #eff2ff;" + "-fx-background-color: #0f7df2;" + "-fx-background-radius: 10px;");
+
+                senderText.setFill(Color.color(0.924, 0.945, 0.996));
+                messageText.setFill(Color.color(0.924, 0.945, 0.996));
+                timeText.setFill(Color.color(0.924, 0.945, 0.996));
+
+                textFlow.getChildren().addAll(senderText, messageText, timeText);
+            } else {
+                hBox.setAlignment(Pos.CENTER_LEFT);
+                hBox.setPadding(new Insets(5, 5, 5, 10));
+                textFlow.setStyle("-fx-background-color: #e9e9eb;" + "-fx-background-radius: 10px;");
+
+                textFlow.getChildren().addAll(senderText, messageText, timeText);
+            }
 
             textFlow.setPadding(new Insets(5, 10, 5, 10));
-            // text.setFill(Color.color(0.924, 0.945, 0.996));
             hBox.getChildren().add(textFlow);
 
             return hBox;
@@ -126,4 +159,6 @@ public class AppController extends AbstractController {
             return null;
         }
     }
+
+
 }

@@ -52,6 +52,8 @@ public class LoginController extends AbstractController {
                 FXMLLoader loader = new FXMLLoader(url);
                 root = (Parent) loader.load();
 
+                root.setStyle("-fx-focus-color: transparent;"); // Removing all blue highlights in
+
                 AppController appController = loader.getController();
                 appController.setLoggedInUser(loggedInUser);
 

@@ -1,5 +1,7 @@
 package com.org.messages.model.user;
 
+import javafx.fxml.Initializable;
+
 import java.time.LocalDateTime;
 
 public class User extends AbstractUser {
@@ -18,6 +20,7 @@ public class User extends AbstractUser {
     }
 
     public void setFirstName(String firstName) {
+        checkName(firstName, "First name");
         this.firstName = firstName;
     }
 
@@ -26,6 +29,7 @@ public class User extends AbstractUser {
     }
 
     public void setSurname(String surname) {
+        checkName(surname, "Surname");
         this.surname = surname;
     }
 
@@ -34,11 +38,24 @@ public class User extends AbstractUser {
     }
 
     public void setDateOfBirth(LocalDateTime dateOfBirth) {
+        checkDateOfBirth(dateOfBirth);
         this.dateOfBirth = dateOfBirth;
     }
 
     @Override
     public String toString() {
         return "{" + getEmail() + " | " + getFirstName() + " " + getSurname() + "}";
+    }
+
+    private void checkName(String name, String nameType) {
+        String regex = "/^[A-Za-z\\x{00C0}-\\x{00FF}][A-Za-z\\x{00C0}-\\x{00FF}\\'\\-]+([\\ A-Za-z\\x{00C0}-\\x{00FF}][A-Za-z\\x{00C0}-\\x{00FF}\\'\\-]+)*/u";
+
+        if (name == null || name.isBlank()) throw new IllegalArgumentException(nameType + " cannot be empty");
+        if (!name.matches(regex)) throw new IllegalArgumentException("Invalid " + nameType.toLowerCase() +".");
+    }
+
+    private void checkDateOfBirth(LocalDateTime dateOfBirth) {
+        if (dateOfBirth == null) throw new IllegalArgumentException("Date of birth cannot be null");
+        if (dateOfBirth.isAfter(LocalDateTime.now())) throw new IllegalStateException("Date of birth cannot be in the future");
     }
 }
