@@ -17,7 +17,7 @@ import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 
-public class LoginController {
+public class LoginController extends AbstractController {
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -60,7 +60,7 @@ public class LoginController {
                 stage.setScene(scene);
                 stage.show();
             } else {
-                System.out.println("Incorrect login credentials");
+                showErrorMessage("Incorrect login credentials");
             }
         } catch (Exception e) {
             // Add proper error handling
